@@ -1,0 +1,367 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model TankSite {
+ id String @id @default(cuid())
+ name String
+ facilityNumber String
+ operator String
+ jurisdiction String
+ address String
+ reviewAt DateTime
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseStorageTank_tankSiteId StorageTank[] @relation("StorageTank_tankSiteId")
+ inverseTankComponent_tankSiteId TankComponent[] @relation("TankComponent_tankSiteId")
+ inverseLeakTest_tankSiteId LeakTest[] @relation("LeakTest_tankSiteId")
+ inverseWalkthrough_tankSiteId Walkthrough[] @relation("Walkthrough_tankSiteId")
+ inverseTankRepair_tankSiteId TankRepair[] @relation("TankRepair_tankSiteId")
+ inverseInventoryReading_tankSiteId InventoryReading[] @relation("InventoryReading_tankSiteId")
+ inverseOperatorTraining_tankSiteId OperatorTraining[] @relation("OperatorTraining_tankSiteId")
+ inverseIncidentNotice_tankSiteId IncidentNotice[] @relation("IncidentNotice_tankSiteId")
+ inverseOperationalTask_tankSiteId OperationalTask[] @relation("OperationalTask_tankSiteId")
+ inverseRuleVersion_tankSiteId RuleVersion[] @relation("RuleVersion_tankSiteId")
+ inverseDocumentRequirement_tankSiteId DocumentRequirement[] @relation("DocumentRequirement_tankSiteId")
+}
+
+model StorageTank {
+ id String @id @default(cuid())
+ name String
+ tankNumber String
+ product String
+ capacityLiters Float
+ installedAt DateTime
+ construction String
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("StorageTank_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+ inverseTankComponent_storageTankId TankComponent[] @relation("TankComponent_storageTankId")
+ inverseLeakTest_storageTankId LeakTest[] @relation("LeakTest_storageTankId")
+ inverseTankRepair_storageTankId TankRepair[] @relation("TankRepair_storageTankId")
+ inverseInventoryReading_storageTankId InventoryReading[] @relation("InventoryReading_storageTankId")
+ inverseIncidentNotice_storageTankId IncidentNotice[] @relation("IncidentNotice_storageTankId")
+}
+
+model TankComponent {
+ id String @id @default(cuid())
+ title String
+ storageTankId String
+ componentType String
+ serialNumber String
+ installedAt DateTime
+ serviceAt DateTime
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedStorageTankId StorageTank @relation("TankComponent_storageTankId", fields: [storageTankId], references: [id], onDelete: Restrict)
+ linkedTankSiteId TankSite @relation("TankComponent_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model LeakTest {
+ id String @id @default(cuid())
+ title String
+ storageTankId String
+ testedAt DateTime
+ method String
+ resultText String
+ technician String
+ evidence String
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedStorageTankId StorageTank @relation("LeakTest_storageTankId", fields: [storageTankId], references: [id], onDelete: Restrict)
+ linkedTankSiteId TankSite @relation("LeakTest_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model Walkthrough {
+ id String @id @default(cuid())
+ title String
+ inspectedAt DateTime
+ inspector String
+ observations String
+ deficiencies String
+ nextDueAt DateTime
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("Walkthrough_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model TankRepair {
+ id String @id @default(cuid())
+ title String
+ storageTankId String
+ issue String
+ contractor String
+ dueAt DateTime
+ repairedAt DateTime?
+ receipt String?
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedStorageTankId StorageTank @relation("TankRepair_storageTankId", fields: [storageTankId], references: [id], onDelete: Restrict)
+ linkedTankSiteId TankSite @relation("TankRepair_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model InventoryReading {
+ id String @id @default(cuid())
+ title String
+ storageTankId String
+ observedAt DateTime
+ openingLiters Float
+ deliveryLiters Float
+ dispensedLiters Float
+ closingLiters Float
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedStorageTankId StorageTank @relation("InventoryReading_storageTankId", fields: [storageTankId], references: [id], onDelete: Restrict)
+ linkedTankSiteId TankSite @relation("InventoryReading_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model OperatorTraining {
+ id String @id @default(cuid())
+ title String
+ operator String
+ course String
+ provider String
+ completedAt DateTime
+ expiresAt DateTime
+ evidence String
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("OperatorTraining_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model IncidentNotice {
+ id String @id @default(cuid())
+ title String
+ storageTankId String
+ observedAt DateTime
+ incidentText String
+ response String
+ receipt String?
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedStorageTankId StorageTank @relation("IncidentNotice_storageTankId", fields: [storageTankId], references: [id], onDelete: Restrict)
+ linkedTankSiteId TankSite @relation("IncidentNotice_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("OperationalTask_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("RuleVersion_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ tankSiteId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([tankSiteId])
+ linkedTankSiteId TankSite @relation("DocumentRequirement_tankSiteId", fields: [tankSiteId], references: [id], onDelete: Restrict)
+}

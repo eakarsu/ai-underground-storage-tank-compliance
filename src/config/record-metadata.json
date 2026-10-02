@@ -1,0 +1,632 @@
+{
+  "TankSite": {
+    "name": "TankSite",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "facilityNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "operator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "address",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "StorageTank": {
+    "name": "StorageTank",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "product",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "capacityLiters",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "installedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "construction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "TankComponent": {
+    "name": "TankComponent",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "storageTankId",
+        "kind": "string",
+        "required": true,
+        "relation": "StorageTank"
+      },
+      {
+        "name": "componentType",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "serialNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "installedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "serviceAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "LeakTest": {
+    "name": "LeakTest",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "storageTankId",
+        "kind": "string",
+        "required": true,
+        "relation": "StorageTank"
+      },
+      {
+        "name": "testedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "method",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "resultText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "technician",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "Walkthrough": {
+    "name": "Walkthrough",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "inspectedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "inspector",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "observations",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "deficiencies",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "nextDueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "TankRepair": {
+    "name": "TankRepair",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "storageTankId",
+        "kind": "string",
+        "required": true,
+        "relation": "StorageTank"
+      },
+      {
+        "name": "issue",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "contractor",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "repairedAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "InventoryReading": {
+    "name": "InventoryReading",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "storageTankId",
+        "kind": "string",
+        "required": true,
+        "relation": "StorageTank"
+      },
+      {
+        "name": "observedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "openingLiters",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "deliveryLiters",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "dispensedLiters",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "closingLiters",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "OperatorTraining": {
+    "name": "OperatorTraining",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "operator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "course",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "provider",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "completedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "IncidentNotice": {
+    "name": "IncidentNotice",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "storageTankId",
+        "kind": "string",
+        "required": true,
+        "relation": "StorageTank"
+      },
+      {
+        "name": "observedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "incidentText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "response",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "tankSiteId",
+        "kind": "string",
+        "required": true,
+        "relation": "TankSite"
+      }
+    ],
+    "parent": {
+      "entity": "TankSite",
+      "field": "tankSiteId"
+    }
+  }
+}
